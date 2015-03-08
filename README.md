@@ -2,7 +2,26 @@
 
 1. Install JDK 8, Maven 3 and then checkout the project to your local machine.
 2. Download and install Apache Spark and Apache Cassandra latest versions
-3. Start Spark and Cassandra Server
+3. Start Spark and Cassandra Server, open Cassandra CQL shell and execute below commands
+
+```
+CREATE KEYSPACE dev
+  WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };
+USE dev;
+```
+
+```
+  create table user_page_views (
+      user_id varchar,
+      page_id varchar,
+      viewed_at timestamp,
+      data varchar,
+      PRIMARY KEY (user_id, viewed_at, page_id)
+  ) with clustering order by (viewed_at desc);
+ alter table user_page_views add visited_page varchar;
+ create index pageviews_url_index on user_page_views (visited_page);
+```
+
 4. Go to project root and run `mvn clean install`
 5. Maven will run the integration tests and create a file named analytics_demo-1.0-SNAPSHOT.jar in {PROJECT_ROOT}/target folder
 6. Javadocs will be generated in {PROJECT_ROOT}/target/site folder
